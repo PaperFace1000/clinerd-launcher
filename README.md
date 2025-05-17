@@ -1,4 +1,4 @@
-# CLInard Launcher
+# CLInerd Launcher
 ------------------
 
 ターミナルから
