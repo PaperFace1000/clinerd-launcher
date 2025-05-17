@@ -1,24 +1,94 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
+import inquirer from 'inquirer';
+import * as fs from 'fs';
+import * as path from 'path';
+import { execSync } from 'child_process';
+import { styleText } from 'node:util'
 
+interface MenuConfig {
+    menu: MenuItem[];
+}
+
+interface MenuItem {
+    name: string;
+    alias?: string | null;
+    memo?: string;
+    action: string;
+    command?: string;
+    children?: MenuItem[];
+}
+
+let history: string[] = [];
+
+// menu.jsonを読み込みたい
+const menuFilePath = path.join(process.cwd(), 'menu.json');
+let menu: MenuItem[] = [];
+try {
+    const menuFileContent = fs.readFileSync(menuFilePath, 'utf-8');
+    let menuConfig: MenuConfig = JSON.parse(menuFileContent);
+    if (!menuConfig.hasOwnProperty('menu')) {
+        throw new Error('メニューファイルに "menu" プロパティが見つかりません');
+    }
+
+    menu = menuConfig.menu;
+
+    // フォーマットエラーをチェック
+    for (const menuItem of menu) {
+        let names: string[] = [];
+        let aliases: string[] = [];
+
+        // 重複チェック
+        let name: string = menuItem.name;
+        if (names.some(str => str === name)) {
+            throw new Error(`メニューの重複エラー: name: 「${name}」が重複しています`);
+        }
+        if (typeof name === 'string' && name.length === 0) {
+            names.push(name);
+        }
+
+        let alias: string|null|undefined = menuItem.alias;
+        if (aliases.some(str => str === alias)) {
+            throw new Error(`メニューの重複エラー: alias: 「${alias}」が重複しています`);
+        }
+        if (typeof alias === 'string' && alias.length > 0) {
+            aliases.push(alias);
+        }
+
+        let action: string = menuItem.action;
+        if (!['command', 'category'].includes(action)) {
+            throw new Error(`メニューのエラー: action: 「${action}」は無効な値です`);
+        }
+
+        if (action === 'command') {
+            let command: string|null|undefined = menuItem.command;
+            if (typeof command === 'undefined' || command === null || command.length === 0) {
+                throw new Error(`メニューのエラー: action: 「command」の場合はcommandの指定が必要です`);
+            }
+        }
+
+        if (action === 'category') {
+            let childeren: MenuItem[]|null|undefined = menuItem.children;
+            if (typeof childeren === 'undefined' || childeren === null || childeren.length === 0) {
+                throw new Error(`メニューのエラー: action: 「category」の場合はchildrenの指定が必要です`);
+            }
+        }
+    }
+} catch (error) {
+    const errorMessage = 'メニューファイルの読み込みに失敗しました。';
+    console.log(styleText('red', errorMessage), error);
+
+    process.exit(1);
+}
+
+// commander を使用してCLIアプリケーションの設定
 program
   .version('0.0.1')
-  .description('A CLI application with options');
+  .description('A CLI application with nested menu');
 
-program
-  .option('-m, --mode <mode>', 'Specify the mode to execute (greet, farewell)');
-
+// オプションの定義（ここでは使用していませんが、commander の基本的な使い方を示すため残しています）
 program.parse(process.argv);
 
-const options = program.opts();
-
-if (options.mode === 'greet') {
-  console.log('Hello there!');
-} else if (options.mode === 'farewell') {
-  console.log('Goodbye!');
-} else if (options.mode) {
-  console.log(`Unknown mode: ${options.mode}`);
-} else {
-  console.log('Please specify a mode using -m or --mode.');
-}
+// メインメニューの表示を開始
+// displayMenu('main');
