@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "package": "npm run build && pkg ."
+    "copy-assets": "copyfiles -u 1 src/assets/**/* dist",
+    "start": "npm run copy-assets && node dist/index.js",
+    "dev": "npm run copy-assets && ts-node src/index.ts",
+    "package": "npm run copy-assets && npm run build && pkg ."
   },
   "bin": {
     "clinerd-launcher": "dist/index.js"
