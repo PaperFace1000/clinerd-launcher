@@ -3,7 +3,6 @@
  */
 export interface MenuItem {
     name: string;
-    alias?: string | null;
     memo?: string;
     action: string;
     command?: string;

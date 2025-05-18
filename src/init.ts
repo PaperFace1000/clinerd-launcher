@@ -51,7 +51,6 @@ export function validateMenuFile(menuFilePath: string): MenuConfig {
     // フォーマットエラーをチェック
     for (const menuItem of menu) {
         let names: string[] = [];
-        let aliases: string[] = [];
 
         // 重複チェック
         let name: string = menuItem.name;
@@ -60,14 +59,6 @@ export function validateMenuFile(menuFilePath: string): MenuConfig {
         }
         if (typeof name === 'string' && name.length === 0) {
             names.push(name);
-        }
-
-        let alias: string|null|undefined = menuItem.alias;
-        if (aliases.some(str => str === alias)) {
-            throw new Error(`メニューの重複エラー: alias: 「${alias}」が重複しています`);
-        }
-        if (typeof alias === 'string' && alias.length > 0) {
-            aliases.push(alias);
         }
 
         let action: string = menuItem.action;

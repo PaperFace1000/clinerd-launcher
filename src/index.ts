@@ -48,10 +48,7 @@ function getMenuItem(menuItems: MenuItem[], names: string[]): MenuItem {
     }
     
     for (const menuItem of menuItems) {
-        if (
-            menuItem.name === currentName
-            || menuItem.alias === currentName
-        ) {
+        if (menuItem.name === currentName) {
             if (names.length === 0) {
                 return menuItem;
             }

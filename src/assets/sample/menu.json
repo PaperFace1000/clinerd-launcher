@@ -2,47 +2,40 @@
     "menu": [
         {
             "name": "talk",
-            "alias": "t",
             "memo": "会話をします",
             "action": "category",
             "children": [
                 {
                     "name": "hello",
-                    "alias": "h",
                     "memo": "「こんにちは」を出力",
                     "action": "command",
                     "command": "echo 'hello'"
                 },
                 {
                     "name": "goodbye",
-                    "alias": "g",
                     "memo": "「さよなら」を出力",
                     "action": "command",
                     "command": "echo 'goodbye'"
                 },
                 {
                     "name": "question",
-                    "alias": "q",
                     "memo": "簡単な質問する。",
                     "action": "category",
                     "children": [
                         {
                             "name": "name",
-                            "alias": "n",
                             "memo": "名前を質問する",
                             "action": "command",
                             "command": "echo 'My name is CLInade Launcher!'"
                         },
                         {
                             "name": "age",
-                            "alias": "a",
                             "memo": "年齢を質問する",
                             "action": "command",
                             "command": "echo '...?'"
                         },
                         {
                             "name": "clock",
-                            "alias": "c",
                             "memo": "現在の時刻を質問する",
                             "action": "command",
                             "command": "date \"+%Y年%m月%d日 %p%l時%M分\""
@@ -53,20 +46,17 @@
         },
         {
             "name": "open",
-            "alias": "o",
             "memo": "ウェブサイトを開きます",
             "action": "category",
             "children": [
                 {
                     "name": "google",
-                    "alias": "g",
                     "memo": "Googleを開く",
                     "action": "command",
                     "command": "open https://www.google.com"
                 },
                 {
                     "name": "github",
-                    "alias": "h",
                     "memo": "GitHubを開く",
                     "action": "command",
                     "command": "open https://github.com"
