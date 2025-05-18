@@ -1,4 +1,4 @@
-#!/usr/bin/env a
+#!/usr/bin/env
 
 import { program } from 'commander';
 import inquirer from 'inquirer';
@@ -103,7 +103,6 @@ function displayMenu() {
     }
 }
 
-// commander を使用してCLIアプリケーションの設定
 program
   .version('1.0.0')
   .description('A CLI application with nested menu');
