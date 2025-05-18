@@ -7,6 +7,7 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import { styleText } from 'node:util'
 import os from 'node:os';
+import { initialize } from './init';
 
 interface MenuConfig {
     menu: MenuItem[];
@@ -24,35 +25,12 @@ interface MenuItem {
 let history: string[] = [];
 
 const userDirectoryPath = path.join(os.homedir(), '.clinerd-launcher');
-if (!fs.existsSync(userDirectoryPath)) {
-    fs.mkdirSync(userDirectoryPath, { recursive: true });
-} else {
-    const stats = fs.statSync(userDirectoryPath);
-    if (!stats.isDirectory()) {
-        console.error(`エラー: ${userDirectoryPath} ディレクトリが存在しません。`);
-        process.exit(1);
-    }
-}
-
 const menuFilePath = path.join(userDirectoryPath, 'menu.json');
-let existsMenuFile = false;
-// TODO: メニュー定義ファイルが存在しない場合はサンプルのメニューファイルを作成するようにしたい
-if (fs.existsSync(menuFilePath)) {
-    const stats = fs.statSync(menuFilePath);
-    existsMenuFile = stats.isFile();
-}
-if (!existsMenuFile) {
-    // TODO: いきなりファイルを作成してしまっているが、作成するかどうかをユーザーと対話して決めるようにしたい。
-    const sampleMenuFilePath = path.join(__dirname, 'assets', 'sample', 'menu.json');
-    const destPath = path.join(userDirectoryPath, 'menu.json');
-    fs.copyFileSync(sampleMenuFilePath, destPath);
-    
-    // TODO: 作成しないを選択した場合はこのエラーを出す予定。
-    // console.log(`エラー: メニューファイルが存在しません。${menuFilePath}を作成してください。`);
-}
 
 let menu: MenuItem[] = [];
 try {
+    initialize();
+
     const menuFileContent = fs.readFileSync(menuFilePath, 'utf-8');
     let menuConfig: MenuConfig = JSON.parse(menuFileContent);
     if (!menuConfig.hasOwnProperty('menu')) {
