@@ -45,8 +45,6 @@ if (!existsMenuFile) {
     // TODO: いきなりファイルを作成してしまっているが、作成するかどうかをユーザーと対話して決めるようにしたい。
     const sampleMenuFilePath = path.join(__dirname, 'assets', 'sample', 'menu.json');
     const destPath = path.join(userDirectoryPath, 'menu.json');
-    console.log('コピー元: ' + sampleMenuFilePath);
-    console.log('コピー先: ' + destPath);
     fs.copyFileSync(sampleMenuFilePath, destPath);
     
     // TODO: 作成しないを選択した場合はこのエラーを出す予定。
