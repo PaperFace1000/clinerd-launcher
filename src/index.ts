@@ -99,6 +99,11 @@ function displayMenu() {
         ]).then(answers => {
             histories.push(answers.selection);
             displayMenu();
+        }).catch(error => {
+            // Ctrl+Cで終了した場合はエラーを無視する
+            if (!(error instanceof Error && error.name === 'ExitPromptError')) {
+                throw error;
+            }
         });
     }
 }
