@@ -2,12 +2,11 @@
 
 import { program } from 'commander';
 import inquirer from 'inquirer';
-import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
 import { styleText } from 'node:util'
 import os from 'node:os';
-import { initialize } from './init';
+import { initialize, validateMenuFile } from './init';
 import { MenuConfig } from './interfaces/menu-config';
 import { MenuItem } from './interfaces/menu-item';
 
@@ -20,55 +19,8 @@ let menu: MenuItem[] = [];
 try {
     initialize();
 
-    const menuFileContent = fs.readFileSync(menuFilePath, 'utf-8');
-    let menuConfig: MenuConfig = JSON.parse(menuFileContent);
-    if (!menuConfig.hasOwnProperty('menu')) {
-        throw new Error('メニューファイルに "menu" プロパティが見つかりません');
-    }
+    const menuConfig: MenuConfig = validateMenuFile(menuFilePath);
 
-    menu = menuConfig.menu;
-
-    // フォーマットエラーをチェック
-    for (const menuItem of menu) {
-        let names: string[] = [];
-        let aliases: string[] = [];
-
-        // 重複チェック
-        let name: string = menuItem.name;
-        if (names.some(str => str === name)) {
-            throw new Error(`メニューの重複エラー: name: 「${name}」が重複しています`);
-        }
-        if (typeof name === 'string' && name.length === 0) {
-            names.push(name);
-        }
-
-        let alias: string|null|undefined = menuItem.alias;
-        if (aliases.some(str => str === alias)) {
-            throw new Error(`メニューの重複エラー: alias: 「${alias}」が重複しています`);
-        }
-        if (typeof alias === 'string' && alias.length > 0) {
-            aliases.push(alias);
-        }
-
-        let action: string = menuItem.action;
-        if (!['command', 'category'].includes(action)) {
-            throw new Error(`メニューのエラー: action: 「${action}」は無効な値です`);
-        }
-
-        if (action === 'command') {
-            let command: string|null|undefined = menuItem.command;
-            if (typeof command === 'undefined' || command === null || command.length === 0) {
-                throw new Error(`メニューのエラー: action: 「command」の場合はcommandの指定が必要です`);
-            }
-        }
-
-        if (action === 'category') {
-            let childeren: MenuItem[]|null|undefined = menuItem.children;
-            if (typeof childeren === 'undefined' || childeren === null || childeren.length === 0) {
-                throw new Error(`メニューのエラー: action: 「category」の場合はchildrenの指定が必要です`);
-            }
-        }
-    }
 } catch (error) {
     const errorMessage = 'メニューファイルの読み込みに失敗しました。';
     console.log(styleText('red', errorMessage), error);
