@@ -8,19 +8,8 @@ import { execSync } from 'child_process';
 import { styleText } from 'node:util'
 import os from 'node:os';
 import { initialize } from './init';
-
-interface MenuConfig {
-    menu: MenuItem[];
-}
-
-interface MenuItem {
-    name: string;
-    alias?: string | null;
-    memo?: string;
-    action: string;
-    command?: string;
-    children?: MenuItem[];
-}
+import { MenuConfig } from './interfaces/menu-config';
+import { MenuItem } from './interfaces/menu-item';
 
 let history: string[] = [];
 
